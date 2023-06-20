@@ -1,0 +1,19 @@
+{
+  "name": "task10",
+  "version": "1.0.0",
+  "description": "Complete Node Js by Pushkar ",
+  "main": "nodejstask10.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon nodejstask10.js",
+    "start-server":"node nodejstask10.js"
+  },
+  "author": "Pushkar Tiwari",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
