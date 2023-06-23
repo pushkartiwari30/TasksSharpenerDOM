@@ -1,13 +1,15 @@
-// we will utsource routing to the routes folder instaed of app.js file( that we did in task 2 )
-// we are slowly going towards an online shop 
-// this admin.js will hold the routes that leads to creation of the products 
+const path = require('path');
 
 const express = require('express');
+
+const rootDir = require('../util/path'); // here we re importing the expoted data of path.js file 
+
 const router = express.Router(); // this Router is like a mini express app tied to the other express app ( pluagble into other express app)
 
 router.get('/add-product',(req, res, next)=>{
     
-    res.send('<html><h2>Enter the Product Name and the Size</h2><form action="/admin/add-product" method="POST"><input type="text" name="title"><input type="number" name="size"><button type="submit">Add Product</button></form>'); 
+    res.sendFile(path.join(rootDir, 'views', 'add-product.html'));
+    // __dirname, '../', this is replaceed by this 'rootDir'  using the helper function in path.js file 
 });
 
 router.post('/add-product', (req,res,next)=>{
