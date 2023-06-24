@@ -1,33 +1,26 @@
-const path = require('path');
-
 const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();  
 
-const adminRoutes = require('./routes/admin'); // this 'adminRoutes' is actually a valid middleware fn 
-const shopRoutes = require('./routes/shop');
-const contactRoutes = require('./routes/contact');
-const messageRoutes = require('./routes/message');
-
+const loginRoutes = require('./routes/login');  
+const chatRoutes = require('./routes/chat');
 
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(express.static(path.join(__dirname, 'public'))); //static keyword serves static files . We will use it to serve static files. We will pass in the path to the folder we wnto sev statically
-// we pass in path to a fn which we want users to have read access to, through the path of that folder in browser. here the css file 
 
-app.use('/admin',adminRoutes); 
-app.use(shopRoutes);
-app.use(contactRoutes);
-app.use(messageRoutes);
-// for the above 2 lines of code the order matters since both are middlewares 
+app.use('/login',loginRoutes); // '/login' acts like a filter. Only routs starting with '/login' willl go into the loginRoutes file 
+// so our url:localhost:3000/add-product now has become url : localhost:3000/login/add-product
+// url:localhost:3000/add-product will lead to error 404  page 
+app.use(chatRoutes);
+
 
 //below code is to handle random urls eg. '/abcdxz' or any un routed url. So in such case, 404 eoor should be diplayed on the browser. That is page not found
 app.use((req,res,next)=>{
-    res.status(404).sendFile(path.join(__dirname, 'views', '404.html')); // here we need not pass the 2nd argument of '../' because we are already in the main(root) folder
-})
+    res.status(404).send('<h1>Page Not found</h1>');
+    // .status is anothe rmehod given by exoressjs. the  .send method has to be at the end of the chain
+});
 
-
-app.listen(3000);
+app.listen(4000);
 
 
 
