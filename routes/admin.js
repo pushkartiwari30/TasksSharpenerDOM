@@ -2,14 +2,16 @@ const path = require('path');
 
 const express = require('express');
 
-const productsController = require('../controllers/products'); // imposrting the controller fn from product.js 
+//const rootDir = require('../util/path'); // here we re importing the expoted data of path.js file 
+const productsController = require('../controllers/products'); // imposrting the controller fn from product.js
 
-const router = express.Router();
+const router = express.Router(); // this Router is like a mini express app tied to the other express app ( pluagble into other express app)
 
-// /admin/add-product => GET
-router.get('/add-product', productsController.getAddProduct);// we dont execute this fun. We just pass the reference of this fn 
+router.get('/add-product', productsController.getAddProduct);
 
-// /admin/add-product => POST
 router.post('/add-product', productsController.postAddProduct);
 
-module.exports = router;
+module.exports = router // this 'router' has above two routes and it gets expoted . And we will import this into the app js file 
+
+//when we use router.get('/' .....), the exact matching of the urlis done. That is for node using app.get request '/'  and '/abc' are not same 
+// this is unline using app.use for whihc '/' and '/abc' are same  

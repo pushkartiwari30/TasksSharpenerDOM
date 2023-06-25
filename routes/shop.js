@@ -1,25 +1,18 @@
-const path = require('path');
+const path = require('path'); // another core module to get the path 
 
 const express = require('express');
 
+//const rootDir = require('../util/path'); // here we re importing the expoted data of path.js file
 const productsController = require('../controllers/products');
-
 const router = express.Router();
 
-router.get('/', productsController.getProducts);
+router.get('/',productsController.getShop);
+// the join method returns a path at the end . It constructs this path by concatinating the different segments 
+//  first argument passed here ( __dirname )is a global variable made available by nodejs  
+// '__dirname' holds the absolute path on our Operating  System to this project flder 
+// 2nd argument is '../' Without this argument , the __dirname will poin to the parent of current file. That is route folder. So '../' thi smakes the __dirname points to 1 step upper sibling folder 
+// 3rd argumeny is the folder name
+// 4th argument is the file 
 
-// Before this task, the abovce peice of code was written like below . So the below callback function had all the ccontrller logic. 
-// This is fine but when we make a very big app , managing the contrller logic in the routes file will be a big mess 
-// router.get('/', (req, res, next) => {
-//   const products = adminData.products;
-//   res.render('shop', {
-//     prods: products,
-//     pageTitle: 'Shop',
-//     path: '/',
-//     hasProducts: products.length > 0,
-//     activeShop: true,
-//     productCSS: true
-//   });
-// });
 
 module.exports = router;
