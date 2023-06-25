@@ -1,26 +1,24 @@
+const path = require('path');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const app = express();  
+const errorController = require('./controllers/error');
 
-const loginRoutes = require('./routes/login');  
-const chatRoutes = require('./routes/chat');
+const app = express();
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.set('view engine', 'ejs');
+app.set('views', 'views');
 
-app.use('/login',loginRoutes); // '/login' acts like a filter. Only routs starting with '/login' willl go into the loginRoutes file 
-// so our url:localhost:3000/add-product now has become url : localhost:3000/login/add-product
-// url:localhost:3000/add-product will lead to error 404  page 
-app.use(chatRoutes);
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 
-//below code is to handle random urls eg. '/abcdxz' or any un routed url. So in such case, 404 eoor should be diplayed on the browser. That is page not found
-app.use((req,res,next)=>{
-    res.status(404).send('<h1>Page Not found</h1>');
-    // .status is anothe rmehod given by exoressjs. the  .send method has to be at the end of the chain
-});
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
 
-app.listen(4000);
+app.use(errorController.get404);
 
-
-
+app.listen(3000);
