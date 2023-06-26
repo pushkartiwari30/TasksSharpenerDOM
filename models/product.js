@@ -41,9 +41,7 @@ module.exports = class Product {
 
   static findById(id, cb) {
     getProductsFromFile(products => {
-      const product = products.find(p => p.id === id); //find is a defalut JS method for arrays 
-      // above code mean that if for any  p in the products, p.id === id then retutn that product and it will be stored int the consts 'product'
-
+      const product = products.find(p => p.id === id);
       cb(product);
     });
   }
