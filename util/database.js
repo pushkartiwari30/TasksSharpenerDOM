@@ -1,19 +1,10 @@
-// code to connect to the sql database and to give back object and gie back connection object whihc alows us yo run quesries 
+const Sequelize = require('sequelize')// this returna  a cpnstructor fn so Sequelize is a constructor fn 
 
-const mysql = require('mysql2') //mysql2 is the newert version of the sqll that we download too 
+const sequelize = new Sequelize('node-complete', 'root', 'mysql@3001', {
+    dialect: 'mysql',
+    host: 'localhost'
+}); // this is an instance of the constructor fn or we can we are creatong a new sequelize object 
+// this object will be automticlly be conencted o the datbase or to be precise, it will set up a connection pool like in prev task 
 
-// ideally we use a pool of connections instead of a singel connecton bet the node and the datavbase 
-// in  hsort theis pool of connection helps us execute multiple quesry operations withut terminaing the conncetion.  
-// the connection terminates when our application shuts down 
 
-
-const pool = mysql.createPool({
-    // we need to pass in a JS object with the info about the datbase engine/ host we are connecting to 
-    host: 'localhost', 
-    user: 'root', // this we defined duing the installation 
-    database: 'node-complete', // this is the schema name 
-    password: 'mysql@3001' // thr passwrd we assigned during installtion 
-});
-
-module.exports = pool.promise();
-// above code will allow us to use promises when working with these connections 
+module.exports = sequelize;

@@ -1,12 +1,11 @@
 const Product = require('../models/product');
-exports.getAddProduct = (req, res, next) => {
 
+exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false
   });
-
 };
 
 exports.postAddProduct = (req, res, next) => {
@@ -17,7 +16,7 @@ exports.postAddProduct = (req, res, next) => {
   const product = new Product(null, title, imageUrl, description, price);
   product
     .save()
-    .then(() => {
+    .then(()=>{
       res.redirect('/'); // i will redirect only when he insertion into datbase is completed 
     })
     .catch(err => console.log(err)); //th save fn in the product.js of the models folder will return a promise
@@ -61,20 +60,17 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
-    .then((products)=>{
-      res.render('admin/products', {
-        prods: products[0],
-        pageTitle: 'Admin Products',
-        path: '/admin/products'
-      })
-    })
-    .catch(err => console.log(err))
+  Product.fetchAll(products => {
+    res.render('admin/products', {
+      prods: products,
+      pageTitle: 'Admin Products',
+      path: '/admin/products'
+    });
+  });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId).then(()=> console.log("Working 2")).catch(err => {
-    console.log(err)});
+  Product.deleteById(prodId);
   res.redirect('/admin/products');
 };
