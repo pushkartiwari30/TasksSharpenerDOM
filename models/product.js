@@ -1,23 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+// we will imort the pool object from the dabase.js file 
+const db =require('../util/database');
 
 const Cart = require('./cart');
-
-const p = path.join(
-  path.dirname(process.mainModule.filename),
-  'data',
-  'products.json'
-);
-
-const getProductsFromFile = cb => {
-  fs.readFile(p, (err, fileContent) => {
-    if (err) {
-      cb([]);
-    } else {
-      cb(JSON.parse(fileContent));
-    }
-  });
-};
 
 module.exports = class Product {
   constructor(id, title, imageUrl, description, price) {
@@ -29,46 +13,23 @@ module.exports = class Product {
   }
 
   save() {
-    getProductsFromFile(products => {
-      if (this.id) {
-        const existingProductIndex = products.findIndex(
-          prod => prod.id === this.id
-        );
-        const updatedProducts = [...products];
-        updatedProducts[existingProductIndex] = this;
-        fs.writeFile(p, JSON.stringify(updatedProducts), err => {
-          console.log(err);
-        });
-      } else {
-        this.id = Math.random().toString();
-        products.push(this);
-        fs.writeFile(p, JSON.stringify(products), err => {
-          console.log(err);
-        });
-      }
-    });
+    return db.execute(
+      'INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)',
+      [this.title, this.price, this.imageUrl, this.description]
+    ); // we dont specify id becayse it will be set automatilalay since it is set as aito increment
+    // ? ? ? ?    is a way to avoide sql injcettion attck 
+    // in the array(2nd argument) we will put the values we would have put in the VALUES(_, _. _. _)
   }
 
   static deleteById(id) {
-    getProductsFromFile(products => {
-      const product = products.find(prod => prod.id === id);
-      const updatedProducts = products.filter(prod => prod.id !== id);
-      fs.writeFile(p, JSON.stringify(updatedProducts), err => {
-        if (!err) {
-          Cart.deleteProduct(id, product.price);
-        }
-      });
-    });
+    return db.execute('DELETE FROM products WHERE products.id = ?', [id]);
   }
 
-  static fetchAll(cb) {
-    getProductsFromFile(cb);
+  static fetchAll() {
+    return db.execute('SELECT * FROM products'); //so fetchAll will return a promise where it is called. We call it in the shop js file of contoller
   }
 
-  static findById(id, cb) {
-    getProductsFromFile(products => {
-      const product = products.find(p => p.id === id);
-      cb(product);
-    });
+  static findById(id) {
+    return db.execute('SELECT * FROM products WHERE products.id = ?', [id]);
   }
 };

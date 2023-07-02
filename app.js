@@ -14,8 +14,6 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
-db.execute('SELECT * FROM products'); // inbuild command for the pool of requets by mysql. 
-//'producst is a dat table that we created in mysql workbench'
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));

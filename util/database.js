@@ -11,7 +11,7 @@ const pool = mysql.createPool({
     // we need to pass in a JS object with the info about the datbase engine/ host we are connecting to 
     host: 'localhost', 
     user: 'root', // this we defined duing the installation 
-    databse: 'node-complete', // this is the schema name 
+    database: 'node-complete', // this is the schema name 
     password: 'mysql@3001' // thr passwrd we assigned during installtion 
 });
 
