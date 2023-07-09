@@ -9,7 +9,7 @@ const sequelize = require('./util/database')// this code will help us reach out 
 const app = express();
 
 app.set('view engine', 'ejs');
-app.set('views', 'views');
+app.set('views', 'views'); 
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -23,7 +23,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-sequelize
+sequelize 
     .sync()
     .then(result =>{
         // console.log(result);
@@ -32,7 +32,7 @@ sequelize
     .catch(err =>{
         console.log(err);
     })
-    // the sync method id aware of all the model in sequelize in models folder; product.js file and it created tables for them
+    // the sync method id aware of all the models that i defined in sequelize in models folder; product.js file and based on the models defined by us in that file, it created tables for them in the datbse 
 // the sync method syncs the models to the databse by creatin g the appropruate tables (and relations) 
 
-//app.listen(3000); this is moved up into eqelize. This means that sevr wil start only after the table has been created 
+//app.listen(3000); this is moved up into seqelize. This means that sevr wil start only after the table has been created 

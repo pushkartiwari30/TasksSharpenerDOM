@@ -2,36 +2,50 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
-  .then(([rows]) =>{ // this is destrcuturing . That is storing values in variables rows 
-    res.render('shop/product-list', {
-      prods: rows,
-      pageTitle: 'All Products',
-      path: '/products'
-    });
-  })
-  .catch(err=> console.log(err))
-  
+  Product.findAll()
+    .then(products =>{ 
+      res.render('shop/product-list', {
+        prods: products,
+        pageTitle: 'All Products',
+        path: '/products'
+      });
+    })
+    .catch(err=> console.log(err))
 };
 
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
-  Product.findById(prodId)
-    .then(([product]) =>{
+  //  thr bleow findByID method is also a mthod given by sequelize so wee need not chnage it like we chbaged fetchAll
+  // only difference is that i get a signgle product instead of an array of products 
+  Product.findByPk(prodId)
+    .then((product) =>{
       res.render('shop/product-detail', {
-        product: product[0],
+        product: product,
         pageTitle: product.title,
         path: '/products'
       });
   })
     .catch(err => console.log(err));
+
+    //Below is an alterntive to findByPk approach . 
+    // using findAll method, we use queries to put constraint on the data we want to get. like eg. where
+    // Product.findAll({where: { id: prodId }})
+    // .then(products =>{ // here an array is returneed. 
+    //   res.render('shop/product-detail', {
+    //     product: product[0],
+    //     pageTitle: product[0].title,
+    //     path: '/products'
+    //   });
+    // })
+    // .catch(err=> console.log(err))
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll()
-    .then(([rows, fieldData]) =>{ // this is destrcuturing . That is storing values in variables rows and fieldData ????
+  // findALl is an inbuilt method given by sequelize. We can add come restriction by using where keyword. 
+  Product.findAll()
+    .then(products =>{ 
       res.render('shop/index', {
-        prods: rows,
+        prods: products,
         pageTitle: 'Shop',
         path: '/'
       });
