@@ -1,0 +1,13 @@
+In this task we will add the backend feature instae dof using the CrudCrud. 
+Here the frontend will be run else whete and the backend wil be run elsewhere. 
+We will run the front end by the method that we sued in DOM Manupulation . That is copy pasting the path of the html file into the browser. 
+Meanwhile the backend will run on separate port. 
+Now hwo to split the code is given in the video of task 18 : https://www.youtube.com/watch?v=KgVBj-IAgkg   Watch from 41 mins 
+In the prev projects of the backedn we did Sever side rendering . But from now on we wil do client side renderig. This is fast. For client side rendering we export the dat ain son format instead of HTML, CSS file data. 
+Technically we can say we will call thw backend from the fronetend and backend wil send the JSON response. 
+We will call the backend from freontend by using Axios   
+
+
+First work on post req then get req then dlete req. 
+
+To make the delete req I am actaully making a post req to send the email of the li i want to delete to the backend.  

@@ -1,0 +1,64 @@
+Steps :
+1. Created a server app.js. chnaged the syntax to concise format using expressjs
+1.1 Install all the necessary packages (necessaary packages will be installed in later stesp too not writing everythin here) 
+1.2 Add threcors, sequlize, body prser fucntionalities in appjs and wherever else needed. 
+2. started the server on a port
+3. connected my frontend to th backend. I opened the frontend html file in the broswer .( Like we did in web dev) then i repplaced the crud crdu link with the server url. Now ill check if the request and respnse is going and coming. Check the headers tab under networks tab to see the same. 
+3. Now add the util folder and add path, database files. add appropriate data to these
+4. Create the models folder and add the  user files 
+5. Edit / make the users file in a way that we want the table of our database to be . Make sure to write the contraints properly. 
+6. Capture the data from the fron end and send the response like :
+const data = await User.create({name: name, email:email ,phonenumber: phonenumber})
+        res.status(201).json({newUserDetail: data});
+        See the actaul app.js code for proper code. 
+
+7. we need to add the code oof sutomatic creation of table in appjs. (alrwady there in nackend notes docs. )
+8. Now after click on submit the table shoudl be created (if it did not exist before) and the data should be sent to the tabel in the backend 
+I have not added routing to my code. Posting just works on localhost:3000/ So now add the routing logic. Chnage the post url to something else instaed of just '/'. Also make the chnage sin the front end too. For now do the routuing, controller logic in the app jas only . Later on clean the code by splittng the ocde into repsective files. 
+9. i now add displaying in UI feature after clicking submit button .Note: refresh will make everyting disaapear as of now . 
+
+
+// HOW TO GET THE DATA FROM BACKEND AND SHOW IN FRONT END
+1. Copy paste the code of posting before app.post. Chnagethe http method. to app.get. We will use 'User.findAll' to get all the data from the mysql datbase. and then send this to the front end as written in th e code. 
+
+// HOW TO DELETE THE USER 
+1. I will send the email from front end to the back end . To do this cature the email in the front end . store it in a variable and then pass that into backedn .we need to make a post req since we are sending some data to the backend 
+after this email data is received at the bakcned then use approprtae sequelize oepration to delet it from the backend . 
+t eveyr setp check wat i being sent and what is being received. 
+MAke a not that the email variable w have send is in a particular object format this is because witout makig it in that format he backend code printed {} for console.log(req.body). 
+
+// CLEANING THE CODE BY SPLITTING THE  ROUTING LOGIC. 
+1. creates a routes folder and then create 3 files inside it namely dlete-user,get-user, add-user. 
+2.  set up each routinf file. Ill write th instruction for just add-user file.  
+3. Go to add-user routes file.  import express module. import Router() fn of express . And then every req-res-handling is done inside router.get or router.post simplilar to previosu version. Refer code for undertandin. 
+Cut the rquest/res handling loic fron th app.js and paste it in the add-user routes. cut form .post to everything. and then export that 
+4. Now come back to app.js and import what we exported in the add-user routes fle .
+using require keyword import the data from the router file .and store in in a variave. 
+add .use to app (at the place where we cut the code). pass that variable in the app.use middleware. 
+5. Similary do this for other 2 routes
+6. We will get some errors since everything is not imported yet Eg:
+const User = require('./models/user'); use 2 dots to import since models folder is 2 levels up. than routng files.  
+
+Import the above in all 3 routing files. 
+
+// CLEANING THE CODE BY SPLITTING THE CONTROLLER LOGIC. 
+I will make only 1 controller logic file foe now. 
+1. Create a file users.js inside cotrollers folder. Import fllieng into it:
+const path = require('path');
+const rootDir = require('../util/path');
+
+2.cut the callback fn of router.post from the add-user routes file and paste it inisde users of contollers 
+3. assign that callback a viaable like eg : exports.postAddUser = cb ()....
+4. Import this into the add-user router file by require keyword and importing the file. give it a vaiable and we call the .postAddUser on this varable and paste this in the router.post mddleware 
+So basically th callback is replaced by controllername varable.postAddUser
+Similary do this for all the 3 
+5.We will get some errors since everything is not imported yet Eg:
+const User = require('../models/user'); use 2 dots to import since models folder is 2 levels up. than routng files.  
+
+Import the above in all 3 routing files. 
+
+
+
+Notes ; 
+We neee to install CORS npm package. Since our front end and backend are running at different places. 
+We also need to install body parser to get req.body and res.body not 'undefined'.

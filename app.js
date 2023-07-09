@@ -1,38 +1,32 @@
 const path = require('path');
-
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const errorController = require('./controllers/error');
-const sequelize = require('./util/database')// this code will help us reach out to the database file we just created  . Thsi si the pool that we exported . We are imorting it here
-
+const sequelize = require('./util/database');
 const app = express();
+const User = require('./models/user');
+var cors = require('cors');
+app.use(cors());
 
-app.set('view engine', 'ejs');
-app.set('views', 'views'); 
+const addUserRoute = require('./routes/add-user');
+const deleteUserRoute = require('./routes/get-user');
+const getUserRoute = require('./routes/delete-user');
 
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
+app.use(bodyParser.json({ extended: false }));
 
+//Routing. 
+app.use(getUserRoute);
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(addUserRoute);
 
-app.use('/admin', adminRoutes);
-app.use(shopRoutes);
+app.use(deleteUserRoute);
 
-app.use(errorController.get404);
-
-sequelize 
+//We will need to add code to check if table exist and if not then creating a table. 
+sequelize
     .sync()
-    .then(result =>{
-        // console.log(result);
+    .then(result => {
         app.listen(3000);
     })
-    .catch(err =>{
+    .catch(err => {
         console.log(err);
     })
-    // the sync method id aware of all the models that i defined in sequelize in models folder; product.js file and based on the models defined by us in that file, it created tables for them in the datbse 
-// the sync method syncs the models to the databse by creatin g the appropruate tables (and relations) 
 
-//app.listen(3000); this is moved up into seqelize. This means that sevr wil start only after the table has been created 
