@@ -1,9 +1,7 @@
-const Sequelize = require('sequelize') // Sequelize is a constructor fn 
+const Sequelize = require('sequelize');
 
-const sequelize = require('../util/database'); // importin dabas epool managed by sequelize from th databse file. 
+const sequelize = require('../util/database');
 
-
-//below code is to define a new model 
 const User = sequelize.define('user', {
   id: {
     type: Sequelize.INTEGER,
@@ -12,14 +10,7 @@ const User = sequelize.define('user', {
     primaryKey: true
   },
   name: Sequelize.STRING,
-  email: {
-    type: Sequelize.STRING,
-    unique: true
-  },
-  phonenumber: {
-    type: Sequelize.STRING,
-    unique: true
-  }
+  email: Sequelize.STRING
 });
 
 module.exports = User;

@@ -13,18 +13,21 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  Product.create({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description
-  }).then(result => {
-    console.log("Created Product");
-    res.redirect('/admin/products');
-  }).catch(err => {
-    console.log(err)
-  }) // create method creates a new elemnt and immeddiately saves it to the database 
-  
+  req.user
+    .createProduct({
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      description: description
+    })
+    .then(result => {
+      // console.log(result);
+      console.log('Created Product');
+      res.redirect('/admin/products');
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -33,8 +36,11 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/');
   }
   const prodId = req.params.productId;
-  Product.findByPk(prodId)
-    .then(product => {
+  req.user
+    .getProducts({ where: { id: prodId } })
+    // Product.findById(prodId)
+    .then(products => {
+      const product = products[0];
       if (!product) {
         return res.redirect('/');
       }
@@ -45,9 +51,7 @@ exports.getEditProduct = (req, res, next) => {
         product: product
       });
     })
-    .catch(err => {
-      console.log(err)
-    })
+    .catch(err => console.log(err));
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -56,29 +60,24 @@ exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
-  // findVyId=findByPk
-  Product.findByPk(prodId)
+  Product.findById(prodId)
     .then(product => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
       product.imageUrl = updatedImageUrl;
-      return product.save();  // this again returns a prosmise
+      return product.save();
     })
     .then(result => {
-      console.log('UPDATED PRODUCT');
+      console.log('UPDATED PRODUCT!');
       res.redirect('/admin/products');
     })
-    .catch(err => {
-      //this catch method is for both thr .then methods.
-      console.log(err)
-
-    })
-
+    .catch(err => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  req.user
+    .getProducts()
     .then(products => {
       res.render('admin/products', {
         prods: products,
@@ -91,16 +90,13 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  // in the sequelie world , the deleteById DNE, so we have th .destroy method insated. 
-  Product.findByPk(prodId)
+  Product.findById(prodId)
     .then(product => {
       return product.destroy();
-      // this return again returns a promise
     })
-    .then(result => { // this .then is for above returned promise
+    .then(result => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
     })
-    .catch();
-
+    .catch(err => console.log(err));
 };
