@@ -1,0 +1,4 @@
+In this project we need to set the axios too. To send the req to backe dand receive the reposne. 
+Replacing the code of local storae with axiso.get/post req. 
+
+In this task unlike prev task of booking appt app, we dont have anything unique in the front end that can be passed to the backedn so we need to set an invisible node/button/something that holds the id of each entry in the UI and when thr user click on the delete button the id if that target is passed to the backedn and then the backend code executes the delete query for that id. 

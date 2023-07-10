@@ -1,24 +1,27 @@
-const path = require('path');
 const express = require('express');
-const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
+const bodyParser = require('body-parser');
+
+
 const app = express();
-const User = require('./models/user');
-var cors = require('cors');
+const cors = require('cors');
 app.use(cors());
 
-const addUserRoute = require('./routes/add-user');
-const deleteUserRoute = require('./routes/get-user');
-const getUserRoute = require('./routes/delete-user');
+const addExpenseRoute = require('./routes/add-expense');
+const deleteExpenseRoute = require('./routes/delete-expense');
+const editExpenseRoute = require('./routes/edit-expense');
+const getExpenseRoute = require('./routes/get-expense');
+
 
 app.use(bodyParser.json({ extended: false }));
 
-//Routing. 
-app.use(getUserRoute);
+app.use(getExpenseRoute);
 
-app.use(addUserRoute);
+app.use(addExpenseRoute);
 
-app.use(deleteUserRoute);
+app.use(deleteExpenseRoute);
+
+app.use(editExpenseRoute);
 
 //We will need to add code to check if table exist and if not then creating a table. 
 sequelize
@@ -29,4 +32,3 @@ sequelize
     .catch(err => {
         console.log(err);
     })
-
