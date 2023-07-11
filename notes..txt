@@ -43,34 +43,3 @@ Make sure whle sending the expense id (from front end )the format is a json objc
 
 // Adding edit functionality 
 same for edit 
-
-***************************************************************************************************
-Routing and Contoller Loggic Splitting
-//Routing
-1. Create a "routes" folder and then create four files inside it, namely "delete-expense", "get-expense", "add-expense", and "edit-expense".
-2. Set up each routing file. I will provide instructions for just the "add-expense" file.
-3. Go to the "add-expense" routes file and import the Express module. Import the Router function of Express as well. All request-response handling will be done inside the router.get or router.post functions, similar to the previous version. Refer to the code for better understanding.
-   Cut the request/response handling logic from the app.js file and paste it in the "add-expense" routes file, removing it from ".post" to the end. Then, export this logic.
-4. Now, return to the app.js file and import what we exported in the "add-expense" routes file. Use the require keyword to import the data from the router file and store it in a variable.
-   Add ".use" to the app (at the place where we cut the code) and pass that variable in the app.use middleware.
-5. Similarly, do this for the other two routes.
-6. We will encounter some errors since everything is not imported yet. For example:
-   const User = require('./models/user'); Use two dots to import since the models folder is two levels up from the routing files.
-
-Import the above in all three routing files.
-
-// CLEANING THE CODE BY SPLITTING THE CONTROLLER LOGIC.
-I will create only one controller logic file for now.
-1. Create a file named "expenses.js" inside the controllers folder.
-2. Cut the callback function of router.post from the "add-expense" routes file and paste it inside the "expense" file in the controllers folder.
-3. Assign that callback to a variable, for example: exports.postAddExpense = cb()...
-4. Import this into the "add-expense" router file using the require keyword and importing the file. Give it a variable name, and call the .postAddUser on this variable in the router.post middleware.
-   So basically, the callback is replaced by "controllername.variable.postAddExpense".
-   Similarly, do this for all the three routes.
-5. We will get some errors since everything is not imported yet. For example:
-   const Expense = require('../models/expense'); Use two dots to import since the models folder is two levels up from the routing files.
-
-Import the above in all three routing files.
-
-
-

@@ -1,42 +1,53 @@
 const myForm = document.querySelector('#my-form');
-const Amt = document.querySelector('#amt');
-const Dsc = document.querySelector('#dsc');
-const Cat = document.querySelector('#category');
+const Candy = document.querySelector('#candy'); //Amt
+const Dsc = document.querySelector('#dsc');  //dsc
+const Price = document.querySelector('#price');  // cat
+const Qty = document.querySelector('#qty');
 const subButton = document.querySelector('.btn');
 const div = document.querySelector('.newDiv');
 
 
-axios.get("http://localhost:3000/get-expense")
+
+axios.get("http://localhost:3000/get-candy")
     .then((response) => {
         for (var i = 0; i < response.data.data.length; i++) {
-            let expenseId = `${response.data.data[i].id}`;
-            // Displaying Information on the webpage in a UList
+            console.log(response.data.data[i]);
+            let expenseId = response.data.data[i].id;
+            //Displaying Information on the webpage in a UList
             const display = document.createElement("li");
-            display.setAttribute("data-expense-id", expenseId); // Set expenseId as a custom attribute 
-            //this attribut will be used to send the id information to the backend in the req. 
+            display.setAttribute("data-candy-id", expenseId);
 
-            const node = document.createTextNode(`${response.data.data[i].amount} - ${response.data.data[i].description} - ${response.data.data[i].category}   `);
+            const node = document.createTextNode(`${response.data.data[i].candy} - ${response.data.data[i].description} - ${response.data.data[i].price} - ${response.data.data[i].quantity}   `);
+
             display.appendChild(node);
-            const element = document.getElementById("users");
+            const element = document.getElementById("candies");
             element.appendChild(display);
-
-            //adding a delete button  
+            // Adding a buy button
             var deleteBtn = document.createElement('button');
-            // Add classes to del button
             deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
             // Append text node
-            deleteBtn.appendChild(document.createTextNode('Delete Expense'));
+            deleteBtn.appendChild(document.createTextNode('Buy 1'));
             // Append button to li
-            display.appendChild(deleteBtn);    //adding an edit button
+            display.appendChild(deleteBtn);
 
-
-            var editBtn = document.createElement('button');
-            // Add classes to edit button
-            editBtn.className = 'btn btn-danger btn-sm float-right edit';
+            // Adding a buy button
+            var deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
             // Append text node
-            editBtn.appendChild(document.createTextNode('Edit Expense'));
-            // Append button to diaplay
-            display.appendChild(editBtn);
+            deleteBtn.appendChild(document.createTextNode('Buy 2'));
+            // Append button to li
+            display.appendChild(deleteBtn);
+
+            // Adding a buy button
+            var deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
+            // Append text node
+            deleteBtn.appendChild(document.createTextNode('Buy 3'));
+            // Append button to li
+            display.appendChild(deleteBtn);
+
+
+
         }
     })
     .catch((err) => {
@@ -45,130 +56,100 @@ axios.get("http://localhost:3000/get-expense")
 
 myForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (Amt.value === '' || Dsc.value === '' || Cat.value === '') {
-        alert(" Please Fill Up The Form Completely")
-    }
-    else {
+    if (Candy.value === '' || Price.value === '' || Qty.value === '') {
+        alert("Please Fill Up The Form Completely");
+    } else {
         let myObj = {
-            Amt: Amt.value,
+            Candy: Candy.value,
             Dsc: Dsc.value,
-            Cat: Cat.value
-
+            Price: Price.value,
+            Qty: Qty.value
         };
-        //making a post req to the backend 
-        axios.post("http://localhost:3000/add-expense", myObj)
+        // Making a post request to the backend
+        axios.post("http://localhost:3000/add-candy", myObj)
             .then((response) => {
-                //console.log(response.data.newExpenseDetail.id);  
-                let expenseId = response.data.newExpenseDetail.id;
+                let expenseId = response.data.id;
 
-                // Displaying Information on the webpage in a UList
+                //Displaying Information on the webpage in a UList
                 const display = document.createElement("li");
-                display.setAttribute("data-expense-id", expenseId); // Set expenseId as a custom attribute 
-                //this attribut will be used to send the id information to the backend in the req. 
+                display.setAttribute("data-candy-id", expenseId);
 
-                const node = document.createTextNode(`${Amt.value} - ${Dsc.value} - ${Cat.value}`);
+                const node = document.createTextNode(` ${Candy.value} - ${Dsc.value} - ${Price.value} - ${Qty.value} `);
                 display.appendChild(node);
 
-                const element = document.getElementById("users");
+                const element = document.getElementById("candies");
                 element.appendChild(display);
-                //adding a delete button  
-
-
+                // Adding a buy button
                 var deleteBtn = document.createElement('button');
-                // Add classes to del button
                 deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
                 // Append text node
-                deleteBtn.appendChild(document.createTextNode('Delete Expense'));
+                deleteBtn.appendChild(document.createTextNode('Buy 1'));
                 // Append button to li
                 display.appendChild(deleteBtn);
 
-                //adding an edit button
-                var editBtn = document.createElement('button');
-                // Add classes to edit button
-                editBtn.className = 'btn btn-danger btn-sm float-right edit';
+                // Adding a buy button
+                var deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
                 // Append text node
-                editBtn.appendChild(document.createTextNode('Edit Expense'));
-                // Append button to diaplay
-                display.appendChild(editBtn);
+                deleteBtn.appendChild(document.createTextNode('Buy 2'));
+                // Append button to li
+                display.appendChild(deleteBtn);
 
-                Amt.value = '';
+                // Adding a buy button
+                var deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
+                // Append text node
+                deleteBtn.appendChild(document.createTextNode('Buy 3'));
+                // Append button to li
+                display.appendChild(deleteBtn);
+
+                Candy.value = '';
                 Dsc.value = '';
-                Cat.value = '';
+                Price.value = '';
+                Qty.value = '';
             })
             .catch((err) => {
                 console.log(err);
-            })
+            });
     }
-})
+});
 
-// deleteing the user data from both UI and Local Stoareg 
-var itemList = document.getElementById('users');
-itemList.addEventListener('click', removeItem);
-function removeItem(e) {
-    if (e.target.classList.contains('delete')) {
-        if (confirm('Are You Sure?')) {
-            var li = e.target.parentElement;
-            // Getting the id attribute value from the li element
-            const expenseId = li.getAttribute("data-expense-id");
-            console.log(expenseId);
-            const expObj = {
-                id: expenseId
-            }
-            //Now we will do a post req and send this id to the backend 
-            axios.post("http://localhost:3000/delete-expense", expObj)
-                .then((response) => {
-                    itemList.removeChild(li);
-                })
-                .catch((err) => {
-                    console.log(err);
-                })
-        }
+document.addEventListener('click', (event) => {
+    let qt = 0;
+    if (event.target && event.target.nodeName === "BUTTON" && event.target.textContent === "Buy 1") {
+        qt = 1;
     }
-}
-
-
-var itemList = document.getElementById('users');
-itemList.addEventListener('click', editItem);
-function editItem(e) {
-    if (e.target.classList.contains('edit')) {
-        var li = e.target.parentElement;
-        // Getting the id attribute value from the li element
-        const expenseId = li.getAttribute("data-expense-id");
-        console.log(expenseId);
-        const expObj = {
-            id: expenseId
-        }
-        //Now we will do a post req and send this id to the backend 
-        axios.post("http://localhost:3000/edit-expense", expObj)
-            .then((response) => {
-                //Deleting the Delete and Edit Buttons (Becuase ...
-                //while splitting based on '-', 
-                // the text of edit delete buttons hence we need to remove it)
-
-                //Deleting the Delete and Edit Buttons  
-                const editButton = li.querySelector('.edit');
-                const deleteButton = li.querySelector('.delete');
-                li.removeChild(editButton);
-                li.removeChild(deleteButton);
-
-                //Step2: Getting the amt,dsc value from the li element that is being edited
-                const amt = li.innerText.split(' - ')[0];
-                console.log(amt);
-                const dsc = li.innerText.split(' - ')[1];
-                console.log(dsc);
-                const cat = li.innerText.split(' - ')[2];
-                console.log(cat);
-
-                // step 3: Pre populate the input Boxes
-                Amt.value = amt;
-                Dsc.value = dsc;
-                Cat.value = cat;
-
-                // Step 4: Removing the corresponding item from UI 
-                itemList.removeChild(li);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+    else if (event.target && event.target.nodeName === "BUTTON" && event.target.textContent === "Buy 2") {
+        qt = 2;
     }
-}
+    else if (event.target && event.target.nodeName === "BUTTON" && event.target.textContent === "Buy 3") {
+        qt = 3;
+    }
+    var li = event.target.parentElement;
+    // Getting the id attribute value from the li element
+    const expenseId = li.getAttribute("data-candy-id");
+    //console.log(expenseId);
+    const expObj = {
+        id: expenseId,
+        lessBy: qt
+    }
+    //Now we will do a post req and send this id to the backend 
+    axios.post("http://localhost:3000/edit-candy", expObj)
+        .then((response) => {
+            //This is method 2 of chnagig UI data
+            // getting all the new values (only quantity would have been chnaged)
+            // CREATING A NEW STRING FROM THE NEW DATA fetched  
+            //chnaging the text content of the li to new string 
+            const oldNode = li.childNodes[0]; // Assuming the value is always the third child node
+            const oldText = oldNode.textContent;
+            const oldQty = oldText.split(' - ')[3];
+            const leftSideData = oldText.split(' - ').slice(0, 3).join(' - ');
+            const newQty = oldQty - qt;
+            const finalData = leftSideData + " - " + `${newQty}`+" ";
+            console.log(finalData);
+            li.childNodes[0].textContent = finalData;
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+});
