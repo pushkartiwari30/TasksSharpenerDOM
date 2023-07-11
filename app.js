@@ -1,22 +1,22 @@
 const express = require('express');
 const sequelize = require('./util/database');
 const bodyParser = require('body-parser');
-const Candy = require('./models/candy');
+const Todo = require('./models/todo');
 const app = express();
 const cors = require('cors');
 app.use(cors());
 app.use(bodyParser.json({ extended: false }));
 
-app.get('/get-candy', async (req, res, next) => {
+app.get('/get-todo', async (req, res, next) => {
     try {
-    Candy.findAll()
-        .then((data) => {
-            //console.log(data);
-            res.status(201).json({ data }); //sending the data to the fronend after getting it from the DB
-        })
-        .catch((error) => {
-            console.error('Error fetching data:', error);
-        });
+        Todo.findAll()
+            .then((data) => {
+                //console.log(data);
+                res.status(201).json({ data }); //sending the data to the fronend after getting it from the DB
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            });
 
     } catch (err) {
         console.log(err);
@@ -27,14 +27,38 @@ app.get('/get-candy', async (req, res, next) => {
 })
 
 
-app.post('/add-candy', async (req, res, next) => {
+app.post('/add-todo', async (req, res, next) => {
     try {
-        const candy = req.body.Candy;
-        const desc = req.body.Dsc;
-        const price = req.body.Price;
-        const quantity = req.body.Qty;
-        const data = await Candy.create({ candy: candy, description: desc, price: price, quantity: quantity });
-        res.status(201).json({ newExpenseDetail: data });
+        console.log(req.body);
+        const todo = req.body.taskvalue;
+        const desc = req.body.descvalue;
+        const flag = req.body.flag;
+        const data = await Todo.create({ todo: todo, description: desc, flag: flag });
+        res.status(201).json({ newTodoDetail: data });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    }
+});
+app.post('/delete-todo', async (req, res, next) => {
+    try {
+        console.log("test")
+        console.log(req.body.id);
+        Todo.destroy({
+            where: {
+                id: req.body.id
+            }
+        })
+            .then(() => {
+                console.log('Entry deleted successfully');
+            })
+            .catch(err => {
+                console.error('Error deleting entry:', err);
+            });
+
+        res.status(201).send('OK');
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -44,41 +68,27 @@ app.post('/add-candy', async (req, res, next) => {
 });
 
 
-app.post('/edit-candy', (req, res, next) => {
+
+
+app.post('/edit-todo', (req, res, next) => {
     try {
         console.log("test")
         console.log(req.body.id);
-        if(req.body.lessBy ==1 ){
-            Candy.decrement('quantity', { by: req.body.lessBy, where: { id: req.body.id } })
-            .then(res => {
-                console.log(`Price increased by 1 for Candy`);
-                //console.log(`New price: ${updatedCandy.price}`);
-                console.log(res);
+
+        Todo.update(
+            {
+                flag: true
+            },
+            {
+                where: { id: req.body.id }
+            }
+        )
+            .then(rowsUpdated => {
+                console.log(`Rows updated: ${rowsUpdated}`);
             })
             .catch(err => {
-                console.log(`Error increasing price for Candy : ${err}`);
+                console.error(err);
             });
-        }
-        else if(req.body.lessBy ==2 ){
-            Candy.decrement('quantity', { by: req.body.lessBy, where: { id: req.body.id } })
-            .then(updatedCandy => {
-                console.log(`Price increased by 2 for Candy`);
-                console.log(`New price: ${updatedCandy.price}`);
-            })
-            .catch(err => {
-                console.log(`Error increasing price for Candy: ${err}`);
-            });
-        } 
-        else if(req.body.lessBy ==3 ){
-            Candy.decrement('quantity', { by: req.body.lessBy, where: { id: req.body.id } })
-            .then(updatedCandy => {
-                console.log(`Price increased by 3 for Candy `);
-                console.log(`New price: ${updatedCandy.price}`);
-            })
-            .catch(err => {
-                console.log(`Error increasing price for Candy  ${err}`);
-            });
-        }
 
         res.status(201).send('OK');
 

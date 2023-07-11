@@ -1,155 +1,165 @@
-const myForm = document.querySelector('#my-form');
-const Candy = document.querySelector('#candy'); //Amt
-const Dsc = document.querySelector('#dsc');  //dsc
-const Price = document.querySelector('#price');  // cat
-const Qty = document.querySelector('#qty');
-const subButton = document.querySelector('.btn');
-const div = document.querySelector('.newDiv');
+document.addEventListener('DOMContentLoaded', () => {
+    const task = document.querySelector('#taskname');
+    const desc = document.querySelector('#description');
+    const add = document.querySelector('#addtask');
+    const todo = document.querySelector('.taskstodo');
+    const done = document.querySelector('.tasksdone');
 
 
-
-axios.get("http://localhost:3000/get-candy")
-    .then((response) => {
-        for (var i = 0; i < response.data.data.length; i++) {
-            console.log(response.data.data[i]);
-            let expenseId = response.data.data[i].id;
-            //Displaying Information on the webpage in a UList
-            const display = document.createElement("li");
-            display.setAttribute("data-candy-id", expenseId);
-
-            const node = document.createTextNode(`${response.data.data[i].candy} - ${response.data.data[i].description} - ${response.data.data[i].price} - ${response.data.data[i].quantity}   `);
-
-            display.appendChild(node);
-            const element = document.getElementById("candies");
-            element.appendChild(display);
-            // Adding a buy button
-            var deleteBtn = document.createElement('button');
-            deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-            // Append text node
-            deleteBtn.appendChild(document.createTextNode('Buy 1'));
-            // Append button to li
-            display.appendChild(deleteBtn);
-
-            // Adding a buy button
-            var deleteBtn = document.createElement('button');
-            deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-            // Append text node
-            deleteBtn.appendChild(document.createTextNode('Buy 2'));
-            // Append button to li
-            display.appendChild(deleteBtn);
-
-            // Adding a buy button
-            var deleteBtn = document.createElement('button');
-            deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-            // Append text node
-            deleteBtn.appendChild(document.createTextNode('Buy 3'));
-            // Append button to li
-            display.appendChild(deleteBtn);
-
-
-
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-    })
-
-myForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (Candy.value === '' || Price.value === '' || Qty.value === '') {
-        alert("Please Fill Up The Form Completely");
-    } else {
-        let myObj = {
-            Candy: Candy.value,
-            Dsc: Dsc.value,
-            Price: Price.value,
-            Qty: Qty.value
-        };
-        // Making a post request to the backend
-        axios.post("http://localhost:3000/add-candy", myObj)
-            .then((response) => {
-                let expenseId = response.data.id;
-
-                //Displaying Information on the webpage in a UList
-                const display = document.createElement("li");
-                display.setAttribute("data-candy-id", expenseId);
-
-                const node = document.createTextNode(` ${Candy.value} - ${Dsc.value} - ${Price.value} - ${Qty.value} `);
-                display.appendChild(node);
-
-                const element = document.getElementById("candies");
-                element.appendChild(display);
-                // Adding a buy button
-                var deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-                // Append text node
-                deleteBtn.appendChild(document.createTextNode('Buy 1'));
-                // Append button to li
-                display.appendChild(deleteBtn);
-
-                // Adding a buy button
-                var deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-                // Append text node
-                deleteBtn.appendChild(document.createTextNode('Buy 2'));
-                // Append button to li
-                display.appendChild(deleteBtn);
-
-                // Adding a buy button
-                var deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-                // Append text node
-                deleteBtn.appendChild(document.createTextNode('Buy 3'));
-                // Append button to li
-                display.appendChild(deleteBtn);
-
-                Candy.value = '';
-                Dsc.value = '';
-                Price.value = '';
-                Qty.value = '';
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-});
-
-document.addEventListener('click', (event) => {
-    let qt = 0;
-    if (event.target && event.target.nodeName === "BUTTON" && event.target.textContent === "Buy 1") {
-        qt = 1;
-    }
-    else if (event.target && event.target.nodeName === "BUTTON" && event.target.textContent === "Buy 2") {
-        qt = 2;
-    }
-    else if (event.target && event.target.nodeName === "BUTTON" && event.target.textContent === "Buy 3") {
-        qt = 3;
-    }
-    var li = event.target.parentElement;
-    // Getting the id attribute value from the li element
-    const expenseId = li.getAttribute("data-candy-id");
-    //console.log(expenseId);
-    const expObj = {
-        id: expenseId,
-        lessBy: qt
-    }
-    //Now we will do a post req and send this id to the backend 
-    axios.post("http://localhost:3000/edit-candy", expObj)
+    axios.get("http://localhost:3000/get-todo")
         .then((response) => {
-            //This is method 2 of chnagig UI data
-            // getting all the new values (only quantity would have been chnaged)
-            // CREATING A NEW STRING FROM THE NEW DATA fetched  
-            //chnaging the text content of the li to new string 
-            const oldNode = li.childNodes[0]; // Assuming the value is always the third child node
-            const oldText = oldNode.textContent;
-            const oldQty = oldText.split(' - ')[3];
-            const leftSideData = oldText.split(' - ').slice(0, 3).join(' - ');
-            const newQty = oldQty - qt;
-            const finalData = leftSideData + " - " + `${newQty}`+" ";
-            console.log(finalData);
-            li.childNodes[0].textContent = finalData;
+            //I will need to make 2 types of object. (By ading a flag property which will determine object is of whihc div. ; Tasks to be doone div or tasks done div) . this is becuae when i run axios.get i need data on frnt end to be dicplyed in 2 divs (based on which flag it has) 
+            //console.log(response.data.data);
+            response.data.data.forEach((obj) => {
+                //Objects that have 'flag' property "true" will be put in "Takss Done' section of fronend
+                let todoId = `${obj.id}`;
+                if (obj.flag == true) {
+                    // Add the task to the "Tasks Done" section
+                    const newTaskDone = document.createElement('div');
+                    const newTaskDoneNode = document.createTextNode(`${obj.todo} - ${obj.description}   `);
+                    newTaskDone.appendChild(newTaskDoneNode);
+                    done.appendChild(newTaskDone);
+
+                    // adding a "Remove" button to remove the taks from everywhere  
+                    const button3 = document.createElement('button');
+                    const buttonnode3 = document.createTextNode(`Remove`);
+                    button3.appendChild(buttonnode3);
+                    newTaskDone.appendChild(button3);
+                    //giving id Property for the front end 
+                    newTaskDone.id = obj.id;
+                    //console.log(newTaskDone);
+
+
+                }
+                else {
+                    //Objects that have 'flag' property "false" will be put in "Takss to do' section of fronend
+                    const newTask = document.createElement('div');
+                    const newTaskNode = document.createTextNode(`${obj.todo} - ${obj.description}   `);
+                    newTask.appendChild(newTaskNode);
+                    todo.appendChild(newTask);
+
+                    // add 2 buttons 
+                    // button 1 : "Done" to move the task to doen section
+                    const button1 = document.createElement('button');
+                    const buttonnode1 = document.createTextNode(`Mark As Done`);
+                    button1.appendChild(buttonnode1);
+                    newTask.appendChild(button1);
+                    // button 2 : "Remove" to remove the taks from everywhere  
+                    const button2 = document.createElement('button');
+                    const buttonnode2 = document.createTextNode(`Remove`);
+                    button2.appendChild(buttonnode2);
+                    newTask.appendChild(button2);
+                    //giving id Property for the front end 
+                    newTask.id = obj.id;
+
+                }
+            });
         })
         .catch((err) => {
             console.log(err);
         })
+
+
+
+    add.addEventListener('click', () => {
+        //console.log(task.value,desc.value);
+        const newTask = document.createElement('div');
+        const newTaskNode = document.createTextNode(`${task.value} - ${desc.value}   `);
+        newTask.appendChild(newTaskNode);
+        todo.appendChild(newTask);
+
+        // add 2 buttons 
+        // button 1 : "Done" to move the task to doen section
+        const button1 = document.createElement('button');
+        const buttonnode1 = document.createTextNode(`Mark As Done`);
+        button1.appendChild(buttonnode1);
+        newTask.appendChild(button1);
+        // button 2 : "Remove" to remove the taks from everywhere  
+        const button2 = document.createElement('button');
+        const buttonnode2 = document.createTextNode(`Remove`);
+        button2.appendChild(buttonnode2);
+        newTask.appendChild(button2);
+
+        //Backend codeing 
+        let obj = {
+            taskvalue: task.value,
+            descvalue: desc.value,
+            flag: false
+        }
+
+        axios.post("http://localhost:3000/add-todo", obj)
+            .then(response => {
+                newTask.id = response.data.newTodoDetail.id;
+                console.log("Res success");
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        //setting the value to empty 
+        task.value = '';
+        desc.value = '';
+
+    });
+    // Event listener for "Mark As Done" button
+    document.addEventListener('click', (event) => {
+        if (event.target && event.target.nodeName === "BUTTON" && event.target.textContent === "Mark As Done") {
+            //console.log('Mark as done');
+            // Get the input fields and their values
+            const taskValue = event.target.parentNode.firstChild.textContent.trim();
+            console.log(taskValue);
+            // Add the task to the "Tasks Done" section
+            const done = document.querySelector('.tasksdone');
+            const newTaskDone = document.createElement('div');
+            const newTaskDoneNode = document.createTextNode(`${taskValue}`);
+            newTaskDone.appendChild(newTaskDoneNode);
+            done.appendChild(newTaskDone);
+            // adding a "Remove" button to remove the taks from everywhere  
+            const button3 = document.createElement('button');
+            const buttonnode3 = document.createTextNode(`Remove`);
+            button3.appendChild(buttonnode3);
+            newTaskDone.appendChild(button3);
+            
+            var div = event.target.parentElement;
+            // Getting the id attribute value from the li element
+            const todoId = div.id;
+            //console.log(todoId);
+            const todoObj = {
+                id: todoId
+            }
+            //Now we will do a post req and send this id to the backend 
+            axios.post("http://localhost:3000/edit-todo", todoObj)
+                .then((response) => {
+                    //removing from frontend tasks t do section. 
+                    console.log(div);
+                    div.remove();
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
+    });
+
+    // Event listener for "Remove" button
+    document.addEventListener('click', (event) => {
+        if (event.target && event.target.nodeName === "BUTTON" && event.target.textContent === "Remove") {
+            var div = event.target.parentElement;
+            // Getting the id attribute value from the li element
+            const todoId = div.id;
+            //console.log(todoId);
+            const todoObj = {
+                id: todoId
+            }
+            //Now we will do a post req and send this id to the backend 
+            axios.post("http://localhost:3000/delete-todo", todoObj)
+                .then((response) => {
+                    //removing from frontend
+                    console.log(div);
+                    div.remove();
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
+    });
+
 });
